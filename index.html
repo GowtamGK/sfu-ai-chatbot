@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFU AI Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header with SFU Logo -->
+    <header>
+        <img src="assets/sfu-logo.png" alt="SFU Logo" class="logo">
+        <h1>SFU AI Chatbot</h1>
+    </header>
+
+    <!-- Raccoon Chat Animation -->
+    <div class="raccoon-container">
+        <img id="raccoonImage" src="assets/raccoon_closed.png" alt="Chatbot Raccoon">
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="bot-message">👋 Hi! I'm the SFU AI Chatbot. Ask me anything about SFU courses!</div>
+        </div>
+        
+        <!-- Input Field & Send Button -->
+        <div class="chat-input-container">
+            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
