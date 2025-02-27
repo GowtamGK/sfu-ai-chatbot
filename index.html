@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SFU AI Chatbot</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>AskSFU</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-    <!-- Header with SFU Logo -->
-    <header>
-        <img src="assets/sfu-logo.png" alt="SFU Logo" class="logo">
-        <h1>SFU AI Chatbot</h1>
-    </header>
-
-    <!-- Raccoon Chat Animation -->
-    <div class="raccoon-container">
-        <img id="raccoonImage" src="assets/raccoon_closed.png" alt="Chatbot Raccoon">
+  <!-- Header with Custom Red Design -->
+  <header>
+    <div class="header-left">
+      <img
+        src="assets/asksfu-header.png"
+        alt="AskSFU Header"
+        class="custom-header"
+      />
     </div>
 
-    <!-- Chat Container -->
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box">
-            <div class="bot-message">👋 Hi! I'm the SFU AI Chatbot. Ask me anything about SFU courses!</div>
-        </div>
-        
-        <!-- Input Field & Send Button -->
-        <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Send</button>
-        </div>
+    <!-- Buttons on the top-right corner -->
+    <div class="header-right">
+      <button id="theme-toggle">🌙</button>
+      <button id="map-button">Campus Map</button>
+      <button id="news-button">News</button>
     </div>
+  </header>
 
-    <script src="script.js"></script>
+  <!-- Main Content Area -->
+  <main>
+    <img
+      src="assets/grey-logo-Photoroom.png"
+      alt="Large SFU Logo"
+      class="large-logo"
+    />
+
+    <!-- Chat Box Area -->
+    <div class="chat-box" id="chat-box">
+      <div class="bot-message">
+        Welcome! I'm your SFU AI Chatbot. How can I help you today?
+      </div>
+      <!-- Messages will be appended here -->
+      <ul id="messages"></ul>
+    </div>
+  </main>
+
+  <!-- Footer (no visible boundary, input pinned at bottom) -->
+  <footer>
+    <div class="chat-input-container">
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Ask me anything..."
+        onkeypress="handleKeyPress(event)"
+      />
+      <button onclick="sendMessage()">></button>
+    </div>
+  </footer>
+
+  <!-- Link to your external script file -->
+  <script src="script.js"></script>
 </body>
 </html>
