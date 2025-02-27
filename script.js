@@ -1,80 +1,96 @@
-// Handle Enter Key Press for Sending Message
-function handleKeyPress(event) {
-    if (event.key === "Enter") {
-        sendMessage();
-    }
-}
+/**********************************************
+ * script.js
+ **********************************************/
 
-// Send User Message to Backend API
-function sendMessage() {
+// When user clicks the map button
+document.getElementById("map-button").addEventListener("click", function () {
+    // Replace with your actual campus map URL:
+    window.open("https://www.sfu.ca/campuses/maps.html", "_blank");
+  });
+  
+  // When user clicks the news button
+  document.getElementById("news-button").addEventListener("click", function () {
+    // Replace with your actual SFU news URL:
+    window.open("https://www.sfu.ca/dashboard.html", "_blank");
+  });
+  
+  // Theme Toggle
+  document.getElementById("theme-toggle").addEventListener("click", function () {
+    document.body.classList.toggle("dark-theme");
+    const isDarkTheme = document.body.classList.contains("dark-theme");
+    document.getElementById("theme-toggle").textContent = isDarkTheme
+      ? "🌙"
+      : "☀️";
+  });
+  
+  // Handle Enter Key Press
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  }
+  
+  // Send a message
+  function sendMessage() {
     const userInput = document.getElementById("user-input").value.trim();
     if (userInput === "") return;
-
-    const chatBox = document.getElementById("chat-box");
-
-    // Display User Message with Animation
-    const userMessage = document.createElement("div");
-    userMessage.className = "user-message";
-    userMessage.textContent = userInput;
-    chatBox.appendChild(userMessage);
-
-    // Clear Input
+  
+    // 1) Add the user's message bubble (right-aligned)
+    addMessage(userInput, true);
+  
+    // Clear the input
     document.getElementById("user-input").value = "";
-
-    // Scroll to Bottom
+  
+    // 2) Create a new bubble for the bot with a loading animation
+    const messageList = document.getElementById("messages");
+    const botLoadingBubble = document.createElement("li");
+    botLoadingBubble.classList.add("bot-message");
+    // Insert the loading dots markup
+    botLoadingBubble.innerHTML = `
+      <div class="loading-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    `;
+    messageList.appendChild(botLoadingBubble);
+  
+    // Scroll to bottom
+    const chatBox = document.getElementById("chat-box");
     chatBox.scrollTop = chatBox.scrollHeight;
-
-    // Add Typing Indicator
-    const typingIndicator = document.createElement("div");
-    typingIndicator.className = "typing-indicator";
-    typingIndicator.innerHTML = "<span></span><span></span><span></span>";
-    chatBox.appendChild(typingIndicator);
-
-    // Change Raccoon Image to Closed (Waiting Mode)
-    changeRaccoonImage("assets/raccoon_closed.png");
-
-    // Simulate Typing Delay Before Bot Responds
+  
+    // 3) Fetch the bot response
     setTimeout(() => {
-        fetch("http://localhost:3000/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: userInput })
+      fetch("http://localhost:3000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userInput }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // 4) Replace the loading dots with the actual bot response
+          botLoadingBubble.innerHTML = data.response;
+          // Scroll to bottom again
+          chatBox.scrollTop = chatBox.scrollHeight;
         })
-        .then(response => response.json())
-        .then(data => {
-            // Remove Typing Indicator
-            chatBox.removeChild(typingIndicator);
-
-            // Change Raccoon Image to Open (Talking Mode)
-            changeRaccoonImage("assets/raccoon_open.png");
-
-            // Display Bot Response with Animation
-            const botMessage = document.createElement("div");
-            botMessage.className = "bot-message";
-
-            // Detect Academic Integrity Responses and Highlight Them
-            if (data.response.includes("Academic Integrity Info") || data.response.includes("cheating") || data.response.includes("disciplinary process")) {
-                botMessage.style.backgroundColor = "#ffcccb";  // Light red for warnings
-                botMessage.innerHTML = `⚠️ <strong>Important:</strong> ${data.response}`;
-            } else {
-                botMessage.innerHTML = data.response.replace(/\n/g, "<br>");
-            }
-
-            chatBox.appendChild(botMessage);
-
-            // Scroll to Bottom
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Close Raccoon Mouth After 3 Seconds
-            setTimeout(() => {
-                changeRaccoonImage("assets/raccoon_closed.png");
-            }, 3000);
-        })
-        .catch(error => console.error("Error:", error));
-    }, 1500); // Simulated Typing Delay
-}
-
-// Function to Change Raccoon Image
-function changeRaccoonImage(imagePath) {
-    document.getElementById("raccoonImage").src = imagePath;
-}
+        .catch((error) => {
+          console.error("Error:", error);
+          // If there's an error, you could show an error message
+          botLoadingBubble.innerHTML = "Sorry, something went wrong.";
+        });
+    }, 1500);
+  }
+  
+  // Reusable helper to add a chat bubble
+  function addMessage(message, isUser) {
+    const messageList = document.getElementById("messages");
+    const messageItem = document.createElement("li");
+    messageItem.textContent = message;
+    messageItem.classList.add(isUser ? "user-message" : "bot-message");
+    messageList.appendChild(messageItem);
+  
+    // Scroll the chat box to the bottom
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  
