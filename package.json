@@ -1,4 +1,7 @@
 {
+  "name": "sfu-ai-chatbot",
+  "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "@langchain/community": "^0.3.31",
     "@langchain/core": "^0.3.40",
@@ -10,5 +13,8 @@
     "express": "^4.21.2",
     "langchain": "^0.3.18",
     "openai": "^4.85.1"
+  },
+  "scripts": {
+    "start": "node server.mjs"
   }
 }
