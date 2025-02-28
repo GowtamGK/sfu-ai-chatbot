@@ -61,7 +61,7 @@ document.getElementById("map-button").addEventListener("click", function () {
   
     // 3) Fetch the bot response
     setTimeout(() => {
-      fetch("http://localhost:3000/chat", {
+      fetch("sfu-ai-chatbot-production.up.railway.app", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userInput }),
