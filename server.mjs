@@ -19,6 +19,52 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from the current directory
+app.use(express.static("."));
+
+// NEW: /api/news endpoint to scrape SFU News
+app.get("/api/news", async (req, res) => {
+  try {
+    const { data } = await axios.get("https://www.sfu.ca/sfunews.html");
+    const $ = cheerio.load(data);
+
+    // 1. Convert all <img> src to absolute paths
+    $("img").each((i, el) => {
+      const src = $(el).attr("src");
+      if (src && !src.startsWith("http")) {
+        const absoluteUrl = new URL(src, "https://www.sfu.ca").toString();
+        $(el).attr("src", absoluteUrl);
+      }
+    });
+
+    // 2. Convert all <a> href to absolute paths
+    $("a").each((i, el) => {
+      const href = $(el).attr("href");
+      if (href && !href.startsWith("http")) {
+        const absoluteUrl = new URL(href, "https://www.sfu.ca").toString();
+        $(el).attr("href", absoluteUrl);
+      }
+    });
+
+    // 3. Now pick the .sfu-columns that has .show-date items
+    let newsHtml = "";
+    $(".sfu-columns").each((i, el) => {
+      const $col = $(el);
+      if ($col.find(".show-date").length > 0) {
+        newsHtml = $col.html();
+        return false;
+      }
+    });
+
+    res.json({ news: newsHtml });
+  } catch (error) {
+    console.error("Error scraping SFU News:", error);
+    res.status(500).json({ error: "Failed to scrape news" });
+  }
+});
+
+
+
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 /**
