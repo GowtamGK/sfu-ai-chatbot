@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Recent News | AskSFU</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header with Custom Red Design -->
+  <header>
+    <div class="header-left">
+      <img
+        src="assets/asksfu-header.png"
+        alt="AskSFU Header"
+        class="custom-header"
+      />
+    </div>
+
+    <div class="header-right">
+      <!-- Link back to index.html or a Home button -->
+      <button onclick="window.location.href='index.html'">Home</button>
+    </div>
+  </header>
+
+  <main class="news-page">
+    <h1 class="news-heading">Recent News</h1>
+    <!-- Container for the news blocks -->
+    <div id="news-container"></div>
+
+    <!-- Show All Button -->
+    <div class="show-all-container">
+      <button id="show-all-button" onclick="window.location.href='https://www.sfu.ca/sfunews/stories/news.html'">
+        Show All News
+      </button>
+    </div>
+  </main>
+
+  <!-- Load the script that handles fetching or displaying the news -->
+  <script src="news.js"></script>
+</body>
+</html>
