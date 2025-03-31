@@ -139,19 +139,6 @@ const URLS = [
   "https://www.sfu.ca/students/calendar/2025/spring/areas-of-study/engineering-science.html",
   "https://www.sfu.ca/students/calendar/2025/spring/programs/computer-and-electronics-design/minor.html",
   "https://www.sfu.ca/students/calendar/2025/spring/programs/mechatronic-systems-engineering/major/bachelor-of-applied-science.html"
-    "https://www.sfu.ca/students/calendar/2025/spring/programs/sustainable-energy-engineering/major/bachelor-of-applied-science.html",
-    "https://www.sfu.ca/students/admission/programs/a-z/s/sustainable-energy-engineering/careers.html",
-    "https://www.sfu.ca/students/admission/programs/a-z/s/sustainable-energy-engineering/requirements.html",
-    "https://www.sfu.ca/students/admission/programs/a-z/s/sustainable-energy-engineering/apply.html",
-    "https://www.sfu.ca/students/admission/programs/arts-social-sciences/minors.html",
-    "https://www.sfu.ca/students/admission/programs/arts-social-sciences/majors.html",
-    "https://www.sfu.ca/students/admission/programs/arts-social-sciences/joint-majors.html",
-    "https://www.sfu.ca/students/admission/programs/arts-social-sciences/certificates.html",
-    "https://www.sfu.ca/students/admission/programs/business/majors.html",
-    "https://www.sfu.ca/students/admission/programs/environment/minors.html",
-    "https://www.sfu.ca/students/admission/programs/environment/majors.html",
-    "https://www.sfu.ca/students/admission/programs/environment/joint-majors.html",
-    "https://www.sfu.ca/students/admission/programs/environment/certificates.html"
 ];
 
 let vectorStore;
