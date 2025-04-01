@@ -12,7 +12,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "langchain": "^0.3.18",
-    "openai": "^4.85.1"
+    "openai": "^4.85.1",
+    "puppeteer": "^24.4.0"
   },
   "scripts": {
     "start": "node server.mjs"
