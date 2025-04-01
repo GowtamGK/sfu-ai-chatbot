@@ -63,7 +63,7 @@ document.getElementById("map-button").addEventListener("click", function () {
     chatBox.scrollTop = chatBox.scrollHeight;
   
     setTimeout(() => {
-      fetch("http://localhost:3000/chat", {
+      fetch("https://sfu-ai-chatbot-production.up.railway.app/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userInput }),
