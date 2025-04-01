@@ -518,10 +518,15 @@ body.dark-theme .bot-text a:hover {
   }
 }
 @media (max-width: 500px) {
-  .bot-message,
-  .user-message,
-  .bot-text {
-    max-width: 95%;
-    font-size: 15px;
-  }
+ .bot-message,
+.user-message,
+.bot-text {
+  max-width: 95vw; /* use viewport width for mobile */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  font-family: Arial, sans-serif; /* unify font */
+  font-size: 16px; /* consistent size */
+  line-height: 1.4;
 }
+
