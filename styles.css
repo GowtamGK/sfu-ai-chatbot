@@ -299,6 +299,12 @@ body.dark-theme .chat-input-container button {
   }
 }
 
+#news-container:has(#loading-spinner) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh; /* Give it some vertical space while loading */
+}
 /* Circular loading spinner */
 .loading-spinner {
   border: 6px solid #f3f3f3;             /* Light gray */
@@ -307,7 +313,7 @@ body.dark-theme .chat-input-container button {
   width: 50px;
   height: 50px;
   animation: spin 1s linear infinite;
-  margin: 2rem auto;                     /* Center horizontally */
+  margin: 8rem auto;                     /* Center horizontally */
 }
 
 @keyframes spin {
@@ -402,4 +408,10 @@ body.dark-theme .chat-input-container button {
 }
 .cmp-result-card-link a:hover {
   color: #8b1727;
+}
+
+.cmp-result-card-date {
+  font-size: 0.95rem;
+  color: #333; /* Dark gray for readability on white background cards */
+  margin-bottom: 0.5rem;
 }
