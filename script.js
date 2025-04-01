@@ -4,15 +4,22 @@
 
 // When user clicks the map button
 document.getElementById("map-button").addEventListener("click", function () {
-  window.open('https://roomfinder.sfu.ca/apps/sfuroomfinder_web/?campus=burnaby', '_blank');
+  const chatBox = document.getElementById("chat-box");
+  const mapContainer = document.getElementById("map-container");
+  const sfuLogo = document.getElementById("sfu-logo");
+
+  // Hide chatbot and logo, show map
+  chatBox.style.display = "none";
+  sfuLogo.style.display = "none";
+  mapContainer.style.display = "block";
 });
 
 // Theme Toggle
-document.getElementById("theme-toggle").addEventListener("click", function () {
-  document.body.classList.toggle("dark-theme");
-  const isDarkTheme = document.body.classList.contains("dark-theme");
-  document.getElementById("theme-toggle").textContent = isDarkTheme ? "🌙" : "☀️";
-});
+// document.getElementById("theme-toggle").addEventListener("click", function () {
+//   document.body.classList.toggle("dark-theme");
+//   const isDarkTheme = document.body.classList.contains("dark-theme");
+//   document.getElementById("theme-toggle").textContent = isDarkTheme ? "🌙" : "☀️";
+// });
 
 // Handle Enter Key Press
 function handleKeyPress(event) {
