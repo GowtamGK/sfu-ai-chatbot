@@ -12,6 +12,7 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import puppeteer from 'puppeteer';
 
 dotenv.config();
 
@@ -23,43 +24,91 @@ app.use(express.json());
 app.use(express.static("."));
 
 // NEW: /api/news endpoint to scrape SFU News
-app.get("/api/news", async (req, res) => {
-  try {
-    const { data } = await axios.get("https://www.sfu.ca/sfunews.html");
-    const $ = cheerio.load(data);
+// app.get("/api/news", async (req, res) => {
+//   try {
+//     const { data } = await axios.get("https://www.sfu.ca/sfunews.html");
+//     const $ = cheerio.load(data);
 
-    // 1. Convert all <img> src to absolute paths
+//     // 1. Convert all <img> src to absolute paths
+//     $("img").each((i, el) => {
+//       const src = $(el).attr("src");
+//       if (src && !src.startsWith("http")) {
+//         const absoluteUrl = new URL(src, "https://www.sfu.ca").toString();
+//         $(el).attr("src", absoluteUrl);
+//       }
+//     });
+
+//     // 2. Convert all <a> href to absolute paths
+//     $("a").each((i, el) => {
+//       const href = $(el).attr("href");
+//       if (href && !href.startsWith("http")) {
+//         const absoluteUrl = new URL(href, "https://www.sfu.ca").toString();
+//         $(el).attr("href", absoluteUrl);
+//       }
+//     });
+
+//     // 3. Now pick the .sfu-columns that has .show-date items
+//     let newsHtml = "";
+//     $(".sfu-columns").each((i, el) => {
+//       const $col = $(el);
+//       if ($col.find(".show-date").length > 0) {
+//         newsHtml = $col.html();
+//         return false;
+//       }
+//     });
+
+//     res.json({ news: newsHtml });
+//   } catch (error) {
+//     console.error("Error scraping SFU News:", error);
+//     res.status(500).json({ error: "Failed to scrape news" });
+//   }
+// });
+app.get("/api/full-news", async (req, res) => {
+  try {
+    const browser = await puppeteer.launch({
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    const page = await browser.newPage();
+
+    await page.goto("https://www.sfu.ca/sfunews/stories/news.html", {
+      waitUntil: "networkidle2"
+    });
+
+    // Click "Show All"
+    await page.click("#cmp-dynamic-filter-show-all-button");
+    await page.waitForSelector(".cmp-result-item", { timeout: 5000 });
+
+    // Get full HTML after clicking
+    const html = await page.content();
+
+    const cheerio = await import("cheerio");
+    const $ = cheerio.load(html);
+
+    // Fix all relative <img> src attributes
     $("img").each((i, el) => {
       const src = $(el).attr("src");
       if (src && !src.startsWith("http")) {
-        const absoluteUrl = new URL(src, "https://www.sfu.ca").toString();
-        $(el).attr("src", absoluteUrl);
+        $(el).attr("src", "https://www.sfu.ca" + src);
       }
     });
 
-    // 2. Convert all <a> href to absolute paths
+    // Fix all relative <a> href attributes
     $("a").each((i, el) => {
       const href = $(el).attr("href");
       if (href && !href.startsWith("http")) {
-        const absoluteUrl = new URL(href, "https://www.sfu.ca").toString();
-        $(el).attr("href", absoluteUrl);
+        $(el).attr("href", "https://www.sfu.ca" + href);
       }
     });
 
-    // 3. Now pick the .sfu-columns that has .show-date items
-    let newsHtml = "";
-    $(".sfu-columns").each((i, el) => {
-      const $col = $(el);
-      if ($col.find(".show-date").length > 0) {
-        newsHtml = $col.html();
-        return false;
-      }
-    });
+    // Now extract all news blocks again
+    const newsHTML = $(".cmp-result-item").map((i, el) => $.html(el)).get().join("");
 
-    res.json({ news: newsHtml });
-  } catch (error) {
-    console.error("Error scraping SFU News:", error);
-    res.status(500).json({ error: "Failed to scrape news" });
+    await browser.close();
+    res.json({ news: newsHTML });
+  } catch (err) {
+    console.error("Error scraping full news:", err);
+    res.status(500).json({ error: "Failed to scrape full news." });
   }
 });
 
