@@ -1,38 +1,20 @@
-# Use the official Node image
-FROM node:20-slim
-
-# Install dependencies required for Puppeteer (Chromium)
-RUN apt-get update && apt-get install -y \
-  wget \
-  ca-certificates \
-  fonts-liberation \
-  libappindicator3-1 \
-  libasound2 \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libcups2 \
-  libdbus-1-3 \
-  libgdk-pixbuf2.0-0 \
-  libnspr4 \
-  libnss3 \
-  libx11-xcb1 \
-  libxcomposite1 \
-  libxdamage1 \
-  libxrandr2 \
-  xdg-utils \
-  libxshmfence1 \
-  --no-install-recommends && \
-  apt-get clean && rm -rf /var/lib/apt/lists/*
+# Use Puppeteer's recommended image
+FROM ghcr.io/puppeteer/puppeteer:latest
 
 # Set working directory
 WORKDIR /app
 
-# Copy files and install dependencies
+# Copy your app files
 COPY . .
+
+# Install dependencies
 RUN npm install
 
-# Expose the port your server listens on (e.g., 3000)
+# Set Puppeteer to skip Chromium download since it's already bundled in the base image
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Expose port (optional if Railway auto-detects)
 EXPOSE 3000
 
-# Start your server
+# Start server
 CMD ["node", "server.mjs"]
