@@ -127,10 +127,11 @@ footer {
   max-width: 800px;
   margin: 0 auto 20px auto; /* center horizontally, add bottom margin */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  flex-wrap: nowrap;
 }
 
 .chat-input-container input {
-  flex: 1;
+  flex: 1 1 auto;
   border: none;
   background: #ffffff;
   padding: 12px;
@@ -138,6 +139,7 @@ footer {
   outline: none;
   border-radius: 10px;
   color: #000;
+  min-width: 0;
 }
 
 .chat-input-container input::placeholder {
@@ -157,6 +159,7 @@ footer {
   align-items: center;
   justify-content: center;
   margin-left: 5px;
+  flex-shrink: 0;
 }
 
 .chat-input-container button:hover {
