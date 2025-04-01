@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>SFU Campus Map</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <img
+        src="assets/asksfu-header.png"
+        alt="AskSFU Header"
+        class="custom-header"
+      />
+    </div>
+    <div class="header-right">
+        <button id="theme-toggle">🌙</button>
+      <button onclick="window.location.href='index.html'">Chat</button>
+    </div>
+  </header>
+
+  <!-- Main Map View -->
+  <main style="margin-top: 70px; display: flex; justify-content: center;">
+    <iframe
+      src="https://roomfinder.sfu.ca/apps/sfuroomfinder_web/?campus=burnaby"
+      width="90%"
+      height="650"
+      style="border: none; border-radius: 10px;"
+      allowfullscreen
+    ></iframe>
+  </main>
+  <script src="theme.js"></script>
+
+</body>
+</html>
