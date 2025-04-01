@@ -37,9 +37,6 @@
 
     <!-- Chat Box Area -->
     <div class="chat-box" id="chat-box">
-      <div class="bot-message">
-        Welcome! I'm your SFU AI Chatbot. How can I help you today?
-      </div>
       <!-- Messages will be appended here -->
       <ul id="messages"></ul>
     </div>
@@ -47,6 +44,10 @@
 
   <!-- Footer (no visible boundary, input pinned at bottom) -->
   <footer>
+    <div class="suggested-questions">
+      <button onclick="suggest('what are the upper division requirement for cmpt major?', this)">Upper divison CMPT courses</button>
+      <button onclick="suggest('Tell me a cool fact about SFU', this)">🌟 SFU fun fact</button>
+    </div>
     <div class="chat-input-container">
       <input
         type="text"
