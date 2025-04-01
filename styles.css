@@ -91,15 +91,6 @@ main {
 }
 
 /* Bot & User Messages */
-.bot-message {
-  background-color: #ffffff;
-  color: #000;
-  border-radius: 8px;
-  padding: 10px;
-  max-width: 60%;
-  align-self: flex-start; /* Left align */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
 .user-message {
   background-color: #a6192e;
@@ -266,6 +257,7 @@ body.dark-theme .chat-input-container button {
     }
   }
   
+
 /* -----------------------------
  * Updated News Page Styling (SFU Format)
  * ----------------------------- */
@@ -299,6 +291,7 @@ body.dark-theme .chat-input-container button {
   }
 }
 
+/* Center the spinner perfectly while loading */
 #news-container:has(#loading-spinner) {
   display: flex;
   justify-content: center;
@@ -313,7 +306,7 @@ body.dark-theme .chat-input-container button {
   width: 50px;
   height: 50px;
   animation: spin 1s linear infinite;
-  margin: 8rem auto;                     /* Center horizontally */
+  margin: 8em auto;                     /* Center horizontally */
 }
 
 @keyframes spin {
@@ -416,6 +409,7 @@ body.dark-theme .chat-input-container button {
   margin-bottom: 0.5rem;
 }
 
+
 /*Avatar*/
 .message-with-avatar {
   display: flex;
@@ -441,6 +435,22 @@ body.dark-theme .chat-input-container button {
 body.dark-theme .bot-text {
   background-color: #333;
   color: #fff;
+}
+
+/* Normal light mode */
+.bot-text a {
+  color: #0055cc;
+  text-decoration: underline;
+}
+
+/* Fix for dark mode contrast */
+body.dark-theme .bot-text a {
+  color: #66aaff; /* Light blue that works well on dark backgrounds */
+  text-decoration: underline;
+}
+
+body.dark-theme .bot-text a:hover {
+  color: #a6d0ff; /* Lighter on hover */
 }
 
 /*suggested questions*/
@@ -472,4 +482,3 @@ body.dark-theme .bot-text {
   background-color: #8b1727;
   transform: translateY(-1px);
 }
-
