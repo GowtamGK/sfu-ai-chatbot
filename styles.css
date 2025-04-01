@@ -266,128 +266,140 @@ body.dark-theme .chat-input-container button {
     }
   }
   
-/* News page */
-/* Limit the width and center the main content of the news page */
+/* -----------------------------
+ * Updated News Page Styling (SFU Format)
+ * ----------------------------- */
+/* Wraps the entire news section and centers everything */
 .news-page {
-  width: 90%;
-  max-width: 1000px;  /* sets a comfortable reading width */
-  margin: 0 auto;     /* centers horizontally */
-  padding: 2rem 1rem; /* top/bottom, left/right spacing */
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* Center all children */
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
-/* Style the heading for a more professional look */
+/* Headline centered and styled */
 .news-heading {
-  margin-top: 50px;   /* Extra space before heading */
-  font-size: 2rem;
-  text-align: left;         /* or center, if you prefer */
-  margin-bottom: 1.5rem;    /* space under heading */
-  border-bottom: 2px solid #ccc; 
-  padding-bottom: 0.5rem;   
-  color: #333;
-}
-
-/* Show All News container, centered horizontally */
-.show-all-container {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #a6192e;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.5rem;
   text-align: center;
-  margin-top: 2rem;
+  opacity: 0;
+  animation: fadeInHeading 0.6s ease forwards;
 }
 
-/* Style the Show All News button to match your theme */
-#show-all-button {
-  background-color: #a6192e;  /* SFU red */
-  color: #fff;
-  border: none;
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+@keyframes fadeInHeading {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-#show-all-button:hover {
-  background-color: #8b1727; /* slightly darker red on hover */
+/* Circular loading spinner */
+.loading-spinner {
+  border: 6px solid #f3f3f3;             /* Light gray */
+  border-top: 6px solid #a6192e;         /* SFU red */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;                     /* Center horizontally */
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* News container */
 #news-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr)); /* narrow max width */
-  gap: 1.5rem;
-  justify-content: center;
+  /* grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 2rem;
+  padding: 1rem 2rem; /* 2rem padding on left and right */
 }
 
-/* News Card */
-.show-date {
+@media (max-width: 1024px) {
+  #news-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  #news-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* News card block */
+.cmp-result-item {
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  max-width: 600px;         
-  margin: 0 auto;           
-  min-height: 500px;        
-  margin: 0 auto 2rem auto;  
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+.cmp-result-item:hover {
+  transform: translateY(-5px);
 }
 
-
-/* Image on top, full width of the card */
-.show-date img {
+/* News image */
+.cmp-result-item img {
   width: 100%;
-  height: 300px;      /* or whatever height you want for a uniform look */
+  height: 200px;
   object-fit: cover;
-  border-radius: 6px;
-  margin-bottom: 1rem;  /* spacing between image and text */
 }
 
-/* Title, date, faculty, notices, read more stacked below image */
-.card-list__item--title {
-  font-size: 1.2rem;
+/* News content wrapper */
+.cmp-result-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+/* Title */
+.cmp-result-card-title a {
+  font-size: 1.1rem;
   font-weight: bold;
   color: #a6192e;
-  margin-bottom: 0.5rem; /* spacing after the title */
-}
-
-/* If your title is an <a> inside .card-list__item--title, ensure it’s block-level: */
-.card-list__item--title a {
   text-decoration: none;
-  color: inherit;         /* use the parent’s color (#a6192e) */
-  display: block;
+}
+.cmp-result-card-title a:hover {
+  text-decoration: underline;
 }
 
-/* Date styling */
-.card-list__item--date {
-  display: inline-block;
-  background-color: #eee;
-  color: #444;
-  padding: 4px 8px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  border-radius: 4px;
-  margin-bottom: 0.75rem;
+/* Filter tags (e.g., faculty, topics) */
+.cmp-result-card-filters {
+  margin-top: 0.5rem;
 }
-
-
-/* Tag list: faculty, community notices, etc. */
-.card-tag-list {
+.cmp-result-card-filter1,
+.cmp-result-card-filter2 {
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-bottom: 0.5rem;  /* spacing under the list */
 }
-.card-tag-list li {
-  font-size: 0.9rem;
-  color: #333;
+.cmp-result-card-filter1 li,
+.cmp-result-card-filter2 li {
+  font-size: 0.85rem;
+  color: #444;
   margin-bottom: 0.3rem;
-  display: block;
 }
 
-/* "Read More" link on its own line */
-.card-list__item--more a {
+/* Read more link */
+.cmp-result-card-link a {
+  margin-top: 0.8rem;
+  display: inline-block;
   color: #a6192e;
   font-weight: bold;
   text-decoration: underline;
-  display: block;
-  margin-top: 0.3rem;
+}
+.cmp-result-card-link a:hover {
+  color: #8b1727;
 }
