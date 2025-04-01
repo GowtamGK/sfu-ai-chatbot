@@ -14,73 +14,124 @@ document.getElementById("map-button").addEventListener("click", function () {
   mapContainer.style.display = "block";
 });
 
-// Theme Toggle
-// document.getElementById("theme-toggle").addEventListener("click", function () {
-//   document.body.classList.toggle("dark-theme");
-//   const isDarkTheme = document.body.classList.contains("dark-theme");
-//   document.getElementById("theme-toggle").textContent = isDarkTheme ? "🌙" : "☀️";
-// });
-
-// Handle Enter Key Press
-function handleKeyPress(event) {
-  if (event.key === "Enter") {
-    sendMessage();
+  
+  
+  // Theme Toggle
+  // document.getElementById("theme-toggle").addEventListener("click", function () {
+  //   document.body.classList.toggle("dark-theme");
+  //   const isDarkTheme = document.body.classList.contains("dark-theme");
+  //   document.getElementById("theme-toggle").textContent = isDarkTheme
+  //     ? "🌙"
+  //     : "☀️";
+  // });
+  
+  
+  // Handle Enter Key Press
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
   }
-}
+  
 
-// Send a message
-function sendMessage() {
-  const userInput = document.getElementById("user-input").value.trim();
-  if (userInput === "") return;
+  function sendMessage() {
+    const userInput = document.getElementById("user-input").value.trim();
+    if (userInput === "") return;
+  
+    addMessage(userInput, true);
+    document.getElementById("user-input").value = "";
+  
+    const messageList = document.getElementById("messages");
+  
+    // 🦝 Rocco thinking bubble
+    const botLoadingBubble = document.createElement("li");
+    botLoadingBubble.classList.add("message-with-avatar");
+    botLoadingBubble.innerHTML = `
+      <img src="assets/think.png" class="rocco-avatar" alt="Rocco thinking">
+      <div class="bot-text">
+        <div class="loading-dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    `;
 
-  // Add user's message
-  addMessage(userInput, true);
-  document.getElementById("user-input").value = "";
-
-  // Create loading animation
-  const messageList = document.getElementById("messages");
-  const botLoadingBubble = document.createElement("li");
-  botLoadingBubble.classList.add("bot-message");
-  botLoadingBubble.innerHTML = `
-    <div class="loading-dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-  `;
-  messageList.appendChild(botLoadingBubble);
-
-  // Scroll to bottom
-  const chatBox = document.getElementById("chat-box");
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Fetch response from Railway API (production)
-  setTimeout(() => {
-    fetch("https://sfu-ai-chatbot-production.up.railway.app/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userInput }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        botLoadingBubble.innerHTML = data.response;
-        chatBox.scrollTop = chatBox.scrollHeight;
+    messageList.appendChild(botLoadingBubble);
+  
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  
+    setTimeout(() => {
+      fetch("http://localhost:3000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userInput }),
       })
-      .catch((error) => {
-        console.error("Error:", error);
-        botLoadingBubble.innerHTML = "Sorry, something went wrong.";
-      });
-  }, 1500);
-}
+        .then((response) => response.json())
+        .then((data) => {
+          // 🦝 Replace with smiling Rocco and actual message
+          botLoadingBubble.innerHTML = `
+            <div class="message-with-avatar">
+              <img src="assets/smile.png" class="rocco-avatar" alt="Rocco smiling">
+              <div class="bot-text">${data.response}</div>
+            </div>
+          `;
+          chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          botLoadingBubble.innerHTML = `
+            <div class="message-with-avatar">
+              <img src="assets/think.png" class="rocco-avatar" alt="Rocco error">
+              <div class="bot-text">Sorry, something went wrong.</div>
+            </div>
+          `;
+        });
+    }, 1500);
+  }
 
-// Add a message to the chat
-function addMessage(message, isUser) {
-  const messageList = document.getElementById("messages");
-  const messageItem = document.createElement("li");
-  messageItem.textContent = message;
-  messageItem.classList.add(isUser ? "user-message" : "bot-message");
-  messageList.appendChild(messageItem);
+  function suggest(text, el) {
+    const input = document.getElementById("user-input");
+    input.value = text;
+    input.focus();
+  
+    // Remove only the clicked suggestion bubble
+    if (el) {
+      el.style.display = "none";
+    }
+  }
+  
+  
+  
+  
+  
+  // Reusable helper to add a chat bubble
+  function addMessage(message, isUser) {
+    const messageList = document.getElementById("messages");
+    const messageItem = document.createElement("li");
+    messageItem.textContent = message;
+    messageItem.classList.add(isUser ? "user-message" : "bot-message");
+    messageList.appendChild(messageItem);
+  
+    // Scroll the chat box to the bottom
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  
 
-  const chatBox = document.getElementById("chat-box");
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+  window.addEventListener("DOMContentLoaded", () => {
+    const welcomeMsg = "Welcome! I'm Rocco, the SFU AI Chatbot. How can I help you today?";
+    const messageList = document.getElementById("messages");
+  
+    const botWelcome = document.createElement("li");
+    botWelcome.classList.add("message-with-avatar");
+    botWelcome.innerHTML = `
+      <div class="message-with-avatar">
+        <img src="assets/smile.png" class="rocco-avatar" alt="Rocco smiling">
+        <div class="bot-text">${welcomeMsg}</div>
+      </div>
+    `;
+    messageList.appendChild(botWelcome);
+  });
+  
