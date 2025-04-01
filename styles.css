@@ -466,12 +466,12 @@ body.dark-theme .bot-text a:hover {
 
 /* Each Suggested Question Button */
 .suggested-questions button {
-  background-color: #a6192e;
+  background-color: #a6192e; /* Same SFU red */
   color: #fff;
   border: none;
-  border-radius: 9999px; /* pill shape */
-  padding: 8px 16px;
-  font-size: 14px;
+  border-radius: 10px; /* Rounded rectangle */
+  padding: 10px 18px;   /* Balanced padding */
+  font-size: 16px;      /* Match input text size */
   font-weight: 500;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
