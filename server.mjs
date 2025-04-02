@@ -297,6 +297,17 @@ const majorMapping = {
 };
 
 let courseContext = {};
+const CLUB_KEYWORDS = [
+  "club", "clubs",
+  "society", "societies",
+  "student group", "student groups",
+  "student organization", "student organizations",
+  "association", "associations",
+  "campus group", "campus activity",
+  "extracurricular", "extra-curricular",
+  "tech club", "dance club", "finance club", "cultural club",
+  "volunteer club", "business club", "ai club", "coding club"
+];
 
 /**
  * Example function: fetch available sections for a course.
@@ -541,7 +552,20 @@ Question: {input}`
     ) {
       responseWithSource += `<br><br>Source: <a href="${sourceUrl}" target="_blank">${sourceUrl}</a>`;
     }
-    return res.json({ response: responseWithSource });
+    
+    // --- Check if the message is club-related ---
+const lowerMsg = message.toLowerCase();
+const hasClubKeyword = CLUB_KEYWORDS.some(keyword => lowerMsg.includes(keyword));
+
+if (hasClubKeyword) {
+  const clubsLink = `<br><br>🔗 You can explore all SFU clubs here: <a href="https://go.sfss.ca/clubs/list.php" target="_blank">https://go.sfss.ca/clubs/list.php</a>`;
+  if (!responseWithSource.includes("sfss.ca/clubs")) {
+    responseWithSource += clubsLink;
+  }
+}
+
+return res.json({ response: responseWithSource });
+
   } catch (error) {
     console.error("Server Error:", error);
     return handleFallbackLLM("I'm sorry, something went wrong. Can you please rephrase your question?", res);
