@@ -170,6 +170,25 @@ class CustomCheerioLoader extends CheerioWebBaseLoader {
       const html = response.data;
       const $ = cheerio.load(html);
       const newDocs = [];
+      // SFSS CLUBS HANDLING
+if (this.webPath.includes("sfss.ca/clubs")) {
+  $(".col-md-12 > .row").each((i, el) => {
+    const name = $(el).find("h4").text().trim();
+    const desc = $(el).find("p").text().trim();
+    const logo = $(el).find("img").attr("src")?.trim();
+    if (name && desc) {
+      const clubText = `${name}\n${desc}${logo ? `\nLogo: https://go.sfss.ca/${logo}` : ""}`;
+      newDocs.push(new Document({
+        pageContent: clubText,
+        metadata: {
+          source: this.webPath,
+          heading: name
+        }
+      }));
+    }
+  });
+}
+
 
       // If this is the CMPT major page, gather heading sections
       if (
@@ -233,7 +252,8 @@ const URLS = [
   "https://www.sfu.ca/students/admission/programs/a-z/c/computing-science/careers.html",
   "https://www.sfu.ca/students/calendar/2025/spring/areas-of-study/engineering-science.html",
   "https://www.sfu.ca/students/calendar/2025/spring/programs/computer-and-electronics-design/minor.html",
-  "https://www.sfu.ca/students/calendar/2025/spring/programs/mechatronic-systems-engineering/major/bachelor-of-applied-science.html"
+  "https://www.sfu.ca/students/calendar/2025/spring/programs/mechatronic-systems-engineering/major/bachelor-of-applied-science.html",
+   "https://go.sfss.ca/clubs/list.php"
 ];
 
 let vectorStore;
