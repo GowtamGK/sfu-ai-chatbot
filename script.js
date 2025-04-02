@@ -57,9 +57,19 @@ document.getElementById("map-button").addEventListener("click", function () {
       </div>
     `;
 
-    messageList.appendChild(botLoadingBubble);
+    //messageList.appendChild(botLoadingBubble);
   
+    //const chatBox = document.getElementById("chat-box");
     const chatBox = document.getElementById("chat-box");
+    const suggestions = document.querySelector(".suggested-questions");
+
+    // Insert bot message above suggested questions
+    if (suggestions && suggestions.parentNode === chatBox) {
+      chatBox.insertBefore(botLoadingBubble, suggestions);
+    } else {
+      messageList.appendChild(botLoadingBubble); // fallback
+    }
+
     chatBox.scrollTop = chatBox.scrollHeight;
   
     setTimeout(() => {
