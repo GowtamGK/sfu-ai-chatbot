@@ -14,6 +14,7 @@ import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import puppeteer from 'puppeteer';
 
+
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,143 @@ app.use(express.json());
 
 // Serve static files from the current directory
 app.use(express.static("."));
+
+const CLUB_KEYWORDS_MAP = {
+  // Tech & Programming
+  "coding": ["tech","developers", "google developer", "cybersecurity", "programming", "software", "game development", "AI", "competitive programming"],
+  "programming": ["developers", "google developer", "coding", "software", "hacking", "AI", "competitive programming"],
+  "developer": ["developers", "google developer", "cybersecurity", "software", "app development", "game development"],
+  "cybersecurity": ["hacking", "security", "privacy", "ethical hacking", "developers"],
+  "game development": ["game developers", "game design", "game programming", "gamedev"],
+  "AI": ["machine learning", "deep learning", "data science", "neural networks", "quantum computing"],
+  "data science": ["AI", "statistics", "machine learning", "big data"],
+
+  // Business & Finance
+  "business": ["beedie", "entrepreneurship", "finance", "marketing", "startups", "investment"],
+  "entrepreneurship": ["business", "startups", "founders", "finance", "networking"],
+  "marketing": ["business", "advertising", "social media", "branding"],
+  "finance": ["investing", "stocks", "trading", "accounting", "investment", "financial literacy"],
+  "investment": ["finance", "stocks", "equity", "venture capital", "real estate"],
+
+  // Debating & Public Speaking
+  "debating": ["debate", "public speaking", "model un", "argumentation", "toastmasters"],
+  "debate": ["debating", "public speaking", "model un", "critical thinking"],
+  "public speaking": ["debating", "toastmasters", "leadership", "speech", "presentation"],
+
+  // Science & Engineering
+  "robotics": ["engineering", "hardware", "electronics", "AI", "automation", "mechatronics"],
+  "engineering": ["robotics", "civil", "mechanical", "electrical", "design", "aerospace", "rocket"],
+  "quantum computing": ["AI", "machine learning", "data science", "physics", "computing"],
+  "data analytics": ["finance", "business", "big data", "sports analytics", "statistics"],
+
+  // Sports & Outdoor Activities
+  "hiking": ["outdoors", "adventure", "camping", "trekking"],
+  "climbing": ["rock climbing", "bouldering", "indoor climbing"],
+  "badminton": ["racket sports", "tennis", "ping pong"],
+  "skiing": ["snowboarding", "winter sports", "mountain sports"],
+  "martial arts": ["taekwondo", "karate", "judo", "bjj", "self-defense"],
+  "dragon boat": ["rowing", "paddling", "team sports"],
+
+  // Culture & Arts
+  "music": ["choir", "jazz", "orchestra", "rock music", "band"],
+  "dance": ["bhangra", "giddha", "hip hop", "latin dance", "bollywood", "salsa", "bachata"],
+  "photography": ["photo", "camera", "visual arts", "media"],
+  "anime": ["manga", "cosplay", "animation", "japanese culture"],
+  "writing": ["creative writing", "poetry", "literature", "novels"],
+  "graphic novels": ["comics", "illustration", "visual storytelling"],
+
+  // Social & Cultural
+  "volunteering": ["charity", "fundraising", "service", "ngo", "awareness"],
+  "sustainability": ["climate change", "environment", "green", "eco-friendly"],
+  "politics": ["government", "activism", "policy", "conservative", "liberal", "ndp", "student government"],
+  "women in stem": ["women in tech", "gender equality", "diversity", "women in engineering"],
+  "mental health": ["stress-free", "happiness", "well-being", "mindfulness"],
+  "religion": ["christian", "muslim", "hindu", "sikh", "buddhist"],
+  "christian": ["bible", "faith", "jesus", "evangelical", "catholic"],
+  "muslim": ["islam", "prayer", "quran", "msa"],
+  "hindu": ["culture", "tradition", "festivals", "hindu yuva"],
+  "sikh": ["gurdwara", "community", "seva"],
+  "jewish": ["judaism", "hillel", "torah"],
+
+  // Miscellaneous
+  "gaming": ["esports", "smash", "pokemon go", "tabletop"],
+  "technology": ["AI", "robotics", "cybersecurity", "quantum computing"],
+  "food": ["foodie", "cuisine", "restaurants", "cooking"],
+  "medicine": ["pre-med", "healthcare", "biology", "science"],
+  "law": ["pre-law", "law school", "justice", "legal studies"]
+};
+
+const SFU_CLUBS = [
+  "350 - SFU", "Accounting Student Association - SFU", "Ace SFU", "Afghanistan Student Union",
+    "Ahmadiyya Muslim Student Association (AMSA)", "AIESEC", "ALAS (Association of Latin American Students)",
+    "Anime Club - SFU", "Arab Students' Association", "Ascend Leadership", "Astronomy Club - SFU",
+    "Backpacking Club", "Bangladesh Students' Alliance", "Bhangra - SFU", "Bowling 300", "BRASA SFU",
+    "Burnaby Mountain Toastmasters", "Campus Association of Baha'i Studies", "Campus Vibe for Christ",
+    "Canadian Cancer Society - SFU", "Canadian Liver Foundation SFU", "Canadianized Asian Club (CAC)",
+    "CaseIT", "Chess Club - SFU", "Choir - SFU", "Christian Leadership Initiative - SFU",
+    "Christian Students @ SFU", "Concert Orchestra - SFU", "Debate Society", "Developers & Systems Club",
+    "Dodo Club", "EAT!SFU", "Enactus SFU", "Engineers Without Borders - SFU Chapter",
+    "Ethiopian & Eritrean Students Association", "Evangelical Chinese Bible Fellowship (ECBF)",
+    "Exercise is Medicine SFU", "Filipino Students Association", "Finance Student Association (FINSA)",
+    "Game Developers Club", "Giddha - SFU", "Google Developer Student Club - SFU", "Hanvoice SFU",
+    "Hiking Club", "Hillel Jewish Students Association", "Hip Hop Club - SFU", "Hong Kong Society (HKS)",
+    "Human Resources Student Association", "Indian Student Federation (ISF)", "Indoor Climbing Club",
+    "Iranian Club - SFU", "Ismaili Students Association", "Japanese Network - SFU", "Jazz Band - Simon Fraser",
+    "JDC West - SFU", "Korean Storm (K.STORM)", "Latin Dance Passion - SFU", "Love Your Neighbour Club",
+    "Malaysia Singapore Students Club", "Management Information Systems Association",
+    "Model United Nations - SFU", "Music Discussion Club", "Muslim Students Association",
+    "NeuraXtension", "Operation Smile SFU", "Outdoors Club - SFU", "Pakistan Students Association",
+    "Palestinian Youth Movement (PYM SFU)", "Phi Delta Epsilon", "Power to Change (P2C)",
+    "Pre-Law Society - SFU", "Pre-Med Society - SFU", "Pre-Vet & Animal Wellness Club",
+    "Provincial BC Conservatives", "Punjabi Student Association - SFU", "Reclaim Tech",
+    "Rock Music Club", "SFU Artists", "SFU ASL Club", "SFU Befikre Dance Team", "SFU Blood, Organ, and Stem Cell Club",
+    "SFU Cybersecurity Club", "SFU Dragon Boat", "SFU Esports Association", "SFU First Responders",
+    "SFU Foodie Club", "SFU Golf Club", "SFU Hanfu Culture Society", "SFU Hindu Yuva", "SFU Magic the Gathering Club (MTG)",
+    "SFU Mechanical Keyboards Club", "SFU OS Development", "SFU Peak Frequency", "SFU Pokemon Go Official Group",
+    "SFU Robotics Club", "SFU Sports Analytics Club", "SFU Swifties", "SFU Thaqalyn Muslim Association",
+    "SFU Transit Enthusiasts Club (SFU TEC)", "Sikh Students' Association - SFU", "Simon Fraser Investment Club",
+    "Ski and Snowboard Club", "Smash Club", "Speech and Hearing Club", "STEM Fellowship", "Student Marketing Association",
+    "Taiwanese Association - SFU", "Team Phantom: SFU Formula SAE Electric",
+    "The FentaNIL Project at SFU (TFP)", "UNICEF - SFU", "University Bible Fellowship",
+    "University Christian Ministries", "UPhoto Photography Club", "Vietnamese Student Association",
+    "Women in Clean Tech", "Women In Engineering", "Women in STEM", "Young Women in Business SFU"
+];
+
+function extractClubKeywords(query) {
+  const stopwords = ["is", "there", "a", "for", "club", "at", "sfu", "any", "do", "you", "have"];
+  return query
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .split(" ")
+    .filter(word => !stopwords.includes(word));
+}
+
+function matchClubs(query) {
+  const keywords = extractClubKeywords(query);
+  const matches = new Set();
+
+  for (const keyword of keywords) {
+    for (const club of SFU_CLUBS) {
+      if (club.toLowerCase().includes(keyword)) matches.add(club);
+    }
+    if (CLUB_KEYWORDS_MAP[keyword]) {
+      for (const related of CLUB_KEYWORDS_MAP[keyword]) {
+        for (const club of SFU_CLUBS) {
+          if (club.toLowerCase().includes(related)) matches.add(club);
+        }
+      }
+    }
+  }
+
+  if (matches.size === 0) {
+    for (const keyword of keywords) {
+      const close = difflib.getCloseMatches(keyword, SFU_CLUBS, 3, 0.6);
+      close.forEach(match => matches.add(match));
+    }
+  }
+
+  return [...matches];
+}
 
 // NEW: /api/news endpoint to scrape SFU News
 // app.get("/api/news", async (req, res) => {
@@ -297,17 +435,6 @@ const majorMapping = {
 };
 
 let courseContext = {};
-const CLUB_KEYWORDS = [
-  "club", "clubs",
-  "society", "societies",
-  "student group", "student groups",
-  "student organization", "student organizations",
-  "association", "associations",
-  "campus group", "campus activity",
-  "extracurricular", "extra-curricular",
-  "tech club", "dance club", "finance club", "cultural club",
-  "volunteer club", "business club", "ai club", "coding club"
-];
 
 /**
  * Example function: fetch available sections for a course.
@@ -415,14 +542,20 @@ function extractCourseDetails(message) {
  * Helper function to truncate text at a sentence boundary.
  * It looks for the last period before maxChars.
  */
-function truncateText(text, maxChars) {
+function truncateText(text, maxChars, sourceUrl) {
   if (text.length <= maxChars) return text;
   let truncated = text.substring(0, maxChars);
   const lastPeriod = truncated.lastIndexOf('.');
   if (lastPeriod !== -1) {
-    return truncated.substring(0, lastPeriod + 1) + `<br>...<br>For full details, please click <a href="${text.match(/https?:\/\/\S+/)?.[0] || '#'}" target="_blank">here</a>.`;
+    return (
+      truncated.substring(0, lastPeriod + 1) +
+      `<br>...<br>For full details, please click <a href="${sourceUrl}" target="_blank">here</a>.`
+    );
   }
-  return truncated + `<br>...<br>For full details, please click <a href="${text.match(/https?:\/\/\S+/)?.[0] || '#'}" target="_blank">here</a>.`;
+  return (
+    truncated +
+    `<br>...<br>For full details, please click <a href="${sourceUrl}" target="_blank">here</a>.`
+  );
 }
 
 /**
@@ -437,6 +570,24 @@ app.post("/chat", async (req, res) => {
     const greetings = ["hi", "hello", "hey", "good morning", "good afternoon"];
     if (greetings.includes(message.toLowerCase().trim())) {
       return res.json({ response: "Hello! How can I assist you today?" });
+    }
+
+    const lower = message.toLowerCase();
+
+    const keywords = extractClubKeywords(lower);
+    const hasRelevantClubKeyword = keywords.some(kw => CLUB_KEYWORDS_MAP[kw]);
+
+    if (hasRelevantClubKeyword) {
+      const matched = matchClubs(lower);
+      if (matched.length > 0) {
+        return res.json({
+          response: `✅ Here are some SFU clubs related to "${message}":<br>- ${matched.slice(0, 3).join("<br>- ")}<br><br>🔗 Explore more at <a href="https://go.sfss.ca/clubs/list.php" target="_blank">SFU Club List</a>`
+        });
+      } else {
+        return res.json({
+          response: `❌ Couldn't find a club match for "${message}".<br><br>🔗 Check all clubs at <a href="https://go.sfss.ca/clubs/list.php" target="_blank">SFU Club List</a>`
+        });
+      }
     }
 
     // If user typed a section code (e.g., D100)
@@ -527,14 +678,6 @@ Question: {input}`
       return handleFallbackLLM(message, res);
     }
 
-    // If the answer is too long, truncate it at a sentence boundary and add a "Read more" link
-    const MAX_CHARS = 800; // Adjust threshold as needed
-    let finalAnswer = result.answer;
-    if (finalAnswer.length > MAX_CHARS) {
-      finalAnswer = truncateText(finalAnswer, MAX_CHARS);
-    }
-    finalAnswer = finalAnswer.split("\n").join("<br>");
-
     let sourceUrl = "Source not available";
     if (
       result.context &&
@@ -545,6 +688,16 @@ Question: {input}`
       sourceUrl = result.context[0].metadata.source;
     }
 
+    // If the answer is too long, truncate it at a sentence boundary and add a "Read more" link
+    const MAX_CHARS = 800; // Adjust threshold as needed
+    let finalAnswer = result.answer;
+    if (finalAnswer.length > MAX_CHARS) {
+      finalAnswer = truncateText(finalAnswer, MAX_CHARS, sourceUrl);
+    }
+    finalAnswer = finalAnswer.split("\n").join("<br>");
+
+
+
     let responseWithSource = finalAnswer;
     if (
       sourceUrl !== "Source not available" &&
@@ -553,17 +706,6 @@ Question: {input}`
       responseWithSource += `<br><br>Source: <a href="${sourceUrl}" target="_blank">${sourceUrl}</a>`;
     }
     
-    // --- Check if the message is club-related ---
-const lowerMsg = message.toLowerCase();
-const hasClubKeyword = CLUB_KEYWORDS.some(keyword => lowerMsg.includes(keyword));
-
-if (hasClubKeyword) {
-  const clubsLink = `<br><br>🔗 You can explore all SFU clubs here: <a href="https://go.sfss.ca/clubs/list.php" target="_blank">https://go.sfss.ca/clubs/list.php</a>`;
-  if (!responseWithSource.includes("sfss.ca/clubs")) {
-    responseWithSource += clubsLink;
-  }
-}
-
 return res.json({ response: responseWithSource });
 
   } catch (error) {
