@@ -516,7 +516,11 @@ function extractCourseDetails(message) {
   const termMatch = message.match(/\b(spring|summer|fall)\b/i);
   const departmentMatch = message.match(/\b([A-Za-z]{3,4})\s+\d{3}\b/);
   const courseNumberMatch = message.match(/\b(\d{3}[A-Za-z]?)\b/);
-  const sectionMatch = message.match(/\b([dD]\d{3})\b/);
+  //const sectionMatch = message.match(/\b([dD]\d{3})\b/);
+  //const sectionMatch = message.match(/\b([A-Za-z]\d{3})\b/);
+  const sectionMatch = message.match(/\b([A-Za-z]{1,3}\d{1,3})\b/);
+
+
 
   const { defaultYear, defaultTerm } = getDefaultAcademicTerm();
   let year = yearMatch ? yearMatch[1] : defaultYear;
@@ -591,7 +595,9 @@ app.post("/chat", async (req, res) => {
     }
 
     // If user typed a section code (e.g., D100)
-    const sectionMatch = message.match(/^d\d{3}$/i);
+    //const sectionMatch = message.match(/^d\d{3}$/i);
+    //const sectionMatch = message.match(/^[a-zA-Z]\d{3}$/);
+    const sectionMatch = message.match(/^[A-Za-z]{1,3}\d{1,3}$/);
     if (sectionMatch) {
       const section = sectionMatch[0].toUpperCase();
       if (courseContext.year && courseContext.term && courseContext.department && courseContext.courseNumber) {
