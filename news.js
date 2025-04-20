@@ -12,7 +12,8 @@ window.addEventListener("DOMContentLoaded", () => {
 //         "<p>Sorry, we could not load the latest news right now.</p>";
 //     });
 // });
-  fetch("https://sfu-ai-chatbot-production.up.railway.app/api/full-news")
+  //fetch("https://sfu-ai-chatbot-production.up.railway.app/api/full-news")
+   fetch("https://sfu-ai-chatbot-production-6037.up.railway.app/api/full-news")
     .then((res) => res.json())
     .then((data) => {
       document.getElementById("loading-spinner")?.remove(); // Remove spinner
