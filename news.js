@@ -13,7 +13,8 @@ window.addEventListener("DOMContentLoaded", () => {
 //     });
 // });
   //fetch("https://sfu-ai-chatbot-production.up.railway.app/api/full-news")
-   fetch("https://sfu-ai-chatbot-production-6037.up.railway.app/api/full-news")
+   // fetch("https://sfu-ai-chatbot-production-6037.up.railway.app/api/full-news")
+     fetch("api/full-news")
     .then((res) => res.json())
     .then((data) => {
       document.getElementById("loading-spinner")?.remove(); // Remove spinner
