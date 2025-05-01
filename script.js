@@ -74,7 +74,8 @@ document.getElementById("map-button").addEventListener("click", function () {
   
     setTimeout(() => {
       //fetch("https://sfu-ai-chatbot-production.up.railway.app/chat", {
-      fetch("https://sfu-ai-chatbot-production-6037.up.railway.app/chat", {
+      // fetch("https://sfu-ai-chatbot-production-6037.up.railway.app/chat", {
+      fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userInput }),
