@@ -24,8 +24,8 @@ RUN npm install
 # Copy the rest of the app
 COPY . .
 
-# Expose port for Railway
-EXPOSE 3000
+# Expose port for Render.com
+EXPOSE 10000
 
 # Start the server
 CMD ["node", "server.mjs"]
