@@ -407,8 +407,8 @@ async function initializeVectorStore() {
   const docsArray = await Promise.all(loaders.map(loader => loader.load()));
   const flatDocs = docsArray.flat();
   const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 15000,
-    chunkOverlap: 600
+    chunkSize: 6000,
+    chunkOverlap: 300
   });
   const splitDocs = await textSplitter.splitDocuments(flatDocs);
   const embeddings = new OpenAIEmbeddings({ apiKey: process.env.OPENAI_API_KEY });
@@ -672,7 +672,7 @@ Question: {input}`
       prompt: promptTemplate
     });
 
-    const retriever = vectorStore.asRetriever({ k: 5 });
+    const retriever = vectorStore.asRetriever({ k: 3 });
     const retrievalChain = await createRetrievalChain({
       combineDocsChain: documentChain,
       retriever
