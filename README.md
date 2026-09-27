@@ -8,3 +8,5 @@ node server.mjs
 If not working,try:
 
 npm install
+
+https://sfu-ai-chatbot.onrender.com/
